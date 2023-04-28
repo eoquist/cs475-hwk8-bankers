@@ -37,16 +37,6 @@ bool sanity_check(int NRES, int NPROC, int *available, int **max, int **allocati
 }
 
 // bool isSafe(int *available, int **max, int **allocation, int NRES, int NPROC) {
-//     int Work[NRES];
-    
-//     for (int i = 0; i < NRES; i++) {
-//         Work[i] = available[i];
-//     }
-//     int Finish[NPROC];
-//     for (int i = 0; i < NPROC; i++) {
-//         Finish[i] = 0;
-//     }
-
 //     bool found = true;
 //     while (found) {
 //         found = false;
@@ -80,20 +70,23 @@ bool sanity_check(int NRES, int NPROC, int *available, int **max, int **allocati
 
 // return permutations from another function
 
-/**
- * This function should
-*/
 bool isSafe(int *available, int **alloc, int **need, int NRES, int NPROC) {
+    /**
+     * What is going on with David's pseudocode ????
+    */
+
     // work[NRES] = available.clone();
-    int size = NRES;
-    int *work_available = malloc(size * sizeof(int)); // printf("available vector size: %d\n", size);
-    for (int i = 0; i < size; i++)
+    int *work_available = malloc(NRES * sizeof(int)); // printf("available vector size: %d\n", size);
+    for (int i = 0; i < NRES; i++)
     {
         work_available[i] = available[i];
     }
     
 	// finish[NPROC] = [0, 0, ..., 0] for all 0 <= i < NPROC
-    // tf is finish -- finished threads/processes?
+    int *finish = malloc(NPROC * sizeof(int));
+    for (int i = 0; i < NPROC; i++) {
+        finish[i] = 0;
+    }
 
 	// while (exists unfinished thread i && Need[i] <= work) {
 	// 	// pretend that thread i finishes execution
