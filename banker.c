@@ -86,10 +86,10 @@ bool sanity_check(int NRES, int NPROC, int *available, int **max, int **allocati
 bool isSafe(int *available, int **alloc, int **need, int NRES, int NPROC) {
     // work[NRES] = available.clone();
     int size = NRES;
-    int *work = malloc(size * sizeof(int)); // printf("available vector size: %d\n", size);
+    int *work_available = malloc(size * sizeof(int)); // printf("available vector size: %d\n", size);
     for (int i = 0; i < size; i++)
     {
-        work[i] = available[i];
+        work_available[i] = available[i];
     }
     
 	// finish[NPROC] = [0, 0, ..., 0] for all 0 <= i < NPROC
@@ -104,11 +104,12 @@ bool isSafe(int *available, int **alloc, int **need, int NRES, int NPROC) {
     // vvvvvvvvvvvvvvvvvvvvvvvvvvv
     // while theres still unfinished threads and 
     int *v1 = need[0]; // where [#] represents an unfinished thread i
-    int *v2 = work;
+    int *v2 = work_available;
     int comparison_value = compare_vectors(v1, v2, NRES); 
     // -1 if v1 >= v2 element wise, false otherwise return index of greater elem
 
-	// // there's an execution order in which all threads
+	// there's an execution order in which all threads
+    // ^^^^^^^ tf does this mean
 	// if (finish == [1, 1, ..., 1])
 	// 	return true	// safe!
 	return false;		// unsafe
