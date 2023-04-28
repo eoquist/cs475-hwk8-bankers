@@ -41,6 +41,14 @@ int main(int argc, char *argv[])
     fscanf(file_stream, "%d", &available[i]);
   }
 
+
+  // need matrix ??? !!!
+  //====================
+  //====================
+  //====================
+  //====================
+
+
   // allocate and get max resource matrix
   max = (int **)malloc(NPROC * sizeof(int *));
   for (int i = 0; i < NPROC; i++)
@@ -66,7 +74,7 @@ int main(int argc, char *argv[])
   // print everything
   // printf("resources: %d\n", NRES);
   // printf("processes: %d\n\navailable:\n", NPROC);
-  // print_vector(available, NRES);
+  print_vector(available, NRES);
   // printf("\nmax:\n");
   // print_matrix(max, NPROC, NRES);
   // printf("\nalloc:\n");
@@ -79,6 +87,9 @@ int main(int argc, char *argv[])
   }
 
   // TODO: Run banker's safety algorithm
+  // MAX VS NEED
+  bool is_safe = isSafe(available,allocation,max,NRES,NPROC);
+  printf("[%d] <-- 0 unsafe, 1 safe\n", is_safe);
 
   return 0;
 }
