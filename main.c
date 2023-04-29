@@ -68,21 +68,17 @@ int main(int argc, char *argv[])
   // need matrix 
   need = (int **)malloc(NPROC * sizeof(int *));
   need = subtract_matrices(max,allocation,NPROC,NRES);
-  //====================
-  //====================
-  //====================
-  //====================
 
   // print everything
-  printf("resources: %d\n", NRES);
-  printf("processes: %d\n\navailable:\n", NPROC);
-  print_vector(available, NRES);
-  printf("\nmax:\n");
-  print_matrix(max, NPROC, NRES);
-  printf("\nalloc:\n");
-  print_matrix(allocation, NPROC, NRES);
-  printf("\nneed:\n");
-  print_matrix(need, NPROC, NRES);
+  // printf("resources: %d\n", NRES);
+  // printf("processes: %d\n\navailable:\n", NPROC);
+  // print_vector(available, NRES);
+  // printf("\nmax:\n");
+  // print_matrix(max, NPROC, NRES);
+  // printf("\nalloc:\n");
+  // print_matrix(allocation, NPROC, NRES);
+  // printf("\nneed:\n");
+  // print_matrix(need, NPROC, NRES);
 
   // run sanity check
   if (!sanity_check(NRES, NPROC, available, max, allocation))
@@ -91,11 +87,12 @@ int main(int argc, char *argv[])
   }
 
   // TODO: Run banker's safety algorithm
-  // MAX VS NEED
-  bool is_safe = isSafe(available,allocation,max,NRES,NPROC);
+  printf("NPROC: %d \t NRES: %d \n", NPROC, NRES);
+  bool is_safe = isSafe(available,allocation,need,NPROC,NRES);
   printf("[%d] <-- 0 unsafe, 1 safe\n", is_safe);
 
 
+  // free everything -----------------------------------
   free(available);
   available = NULL;
   // free max

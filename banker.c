@@ -36,74 +36,52 @@ bool sanity_check(int NRES, int NPROC, int *available, int **max, int **allocati
     return true;
 }
 
-// bool isSafe(int *available, int **max, int **allocation, int NRES, int NPROC) {
-//     bool found = true;
-//     while (found) {
-//         found = false;
-//         for (int i = 0; i < NPROC; i++) {
-//             if (Finish[i] == 0) {
-//                 bool needs_met = true;
-//                 for (int j = 0; j < NRES; j++) {
-//                     if (max[i][j] - allocation[i][j] > Work[j]) {
-//                         needs_met = false;
-//                         break;
-//                     }
-//                 }
-//                 if (needs_met) {
-//                     found = true;
-//                     for (int j = 0; j < NRES; j++) {
-//                         Work[j] += allocation[i][j];
-//                     }
-//                     Finish[i] = 1;
-//                 }
-//             }
-//         }
-//     }
 
-//     for (int i = 0; i < NPROC; i++) {
-//         if (Finish[i] == 0) {
-//             return false;
-//         }
-//     }
-//     return true;
-// }
 
-// return permutations from another function
 
-bool isSafe(int *available, int **alloc, int **need, int NRES, int NPROC) {
-    // work[NRES] = available.clone();
-    int *work_available = malloc(NRES * sizeof(int)); // printf("available vector size: %d\n", size);
+// return permutations from another function ???
+
+bool isSafe(int *available, int **alloc, int **need, int NPROC, int NRES) {
+    int *work = malloc(NRES * sizeof(int));
     for (int i = 0; i < NRES; i++){
-        work_available[i] = available[i];
+        work[i] = available[i];
     }
-    
-	// finish[NPROC] = [0, 0, ..., 0] for all 0 <= i < NPROC
     int *finish = malloc(NPROC * sizeof(int));
     for (int i = 0; i < NPROC; i++) {
         finish[i] = 0;
     }
 
-	// while (exists unfinished thread i && Need[i] <= work) {
-	// 	// pretend that thread i finishes execution
-	// 	// then OS can reclaim thread i's allocated resources
-	// 	work += alloc[i]
-	// 	finish[i] = 1
-	// }
-    // vvvvvvvvvvvvvvvvvvvvvvvvvvv
-    // while theres still unfinished threads and 
-    int *v1 = need[0]; // where [#] represents an unfinished thread i
-    int *v2 = work_available;
-    int comparison_value = compare_vectors(v1, v2, NRES); 
-    // -1 if v1 >= v2 element wise, false otherwise return index of greater elem
-
-	// there's an execution order in which all threads
-    // ^^^^^^^ tf does this mean
-	// if (finish == [1, 1, ..., 1])
-	// 	return true	// safe!
+    bool all_compatible = true;
+    while (all_compatible) {
+        all_compatible = is_zero_vector(finish, NPROC);
+        for(int i = 0; i < NPROC; i++){
+            // test print
+            // printf("need:\n");
+            // print_matrix(need, NPROC, NRES);
+            int need_leq_work = compare_vectors(need[i], work, NRES); // -1 if v1 >= v2 element wise, false otherwise return index of greater elem
+            // printf("need[%d] <= work\n", i);
+            // if(i == 0){
+            //     printf("work:\n");
+            //     print_vector(work,NRES);
+            //     printf("compare vec value: %d\n", need_leq_work);
+            //     exit(1);
+            // }
+            
+            
+            if(finish[i] == 0 && need_leq_work != -1){
+                add_vectors(work, alloc[i], NRES);
+                finish[i] = 1;
+            }
+        }
+        printf("all compatible? = %d\n", all_compatible);
+    }
+    
+    // free everything
     free(finish);
     finish = NULL;
-    free(work_available);
-    work_available = NULL;
+    free(work);
+    work = NULL;
+
 	return false;		// unsafe
 }
 

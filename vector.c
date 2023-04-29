@@ -127,3 +127,12 @@ void print_matrix(int **matrix, int n, int m)
         printf("\n");
     }
 }
+
+// checks if a vector is all zeroes - used for finish vector in bankers algorithm
+bool is_zero_vector(int *finish, int n){
+    bool is_zero = true;
+    for(int i = 0; i < n; i++){
+        is_zero = is_zero && (finish[i] == 0);
+    }
+    return is_zero;
+}
