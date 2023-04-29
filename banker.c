@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 #include "vector.h"
 #include "banker.h"
 
@@ -50,11 +51,21 @@ bool isSafe(int *available, int **alloc, int **need, int NPROC, int NRES) {
     }
 
     bool all_compatible = true;
+    char safe_status[6] = "SAFE:\t";
     while (all_compatible) {
         all_compatible = is_zero_vector(finish, NPROC);
         for(int i = 0; i < NPROC; i++){
             int need_leq_work = compare_vectors(work, need[i], NRES); 
             if(finish[i] == 0 && need_leq_work != -1){
+                // Print formats
+                int size = snprintf(NULL, 0, "T%d\t", i); 
+                char* safe_thread_str = malloc(size + 1); // allocate memory for the character array
+                sprintf(safe_thread_str, "T%d\t", i); // format the string and save it to the character array
+                strcat(safe_status,safe_thread_str);
+                free(safe_thread_str);
+                safe_thread_str = NULL;
+
+                strcat(safe_status, safe_thread_str);
                 add_vectors(work, alloc[i], NRES);
                 finish[i] = 1;
             }
@@ -62,8 +73,11 @@ bool isSafe(int *available, int **alloc, int **need, int NPROC, int NRES) {
     }
 
     // there's an execution order in which all threads
+    // ???
     print_vector(finish, NPROC);
+
 	if (is_ones_vector(finish, NPROC)){
+        printf("%s", safe_status);
         // free everything
         free(finish);
         finish = NULL;
