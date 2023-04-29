@@ -37,8 +37,6 @@ bool sanity_check(int NRES, int NPROC, int *available, int **max, int **allocati
 }
 
 
-
-
 // return permutations from another function ???
 
 bool isSafe(int *available, int **alloc, int **need, int NPROC, int NRES) {
@@ -55,33 +53,40 @@ bool isSafe(int *available, int **alloc, int **need, int NPROC, int NRES) {
     while (all_compatible) {
         all_compatible = is_zero_vector(finish, NPROC);
         for(int i = 0; i < NPROC; i++){
+            int need_leq_work = compare_vectors(work, need[i], NRES); 
             // test print
             // printf("need:\n");
             // print_matrix(need, NPROC, NRES);
-            int need_leq_work = compare_vectors(need[i], work, NRES); // -1 if v1 >= v2 element wise, false otherwise return index of greater elem
-            // printf("need[%d] <= work\n", i);
-            // if(i == 0){
-            //     printf("work:\n");
-            //     print_vector(work,NRES);
-            //     printf("compare vec value: %d\n", need_leq_work);
-            //     exit(1);
-            // }
-            
+            // printf("need[%d] <= work ??\n", i);
+            // printf("need: ");
+            // print_vector(need[i],NRES);
+            // printf("work: ");
+            // print_vector(work,NRES);
+            // printf("compare vec value: %d\n", need_leq_work);
             
             if(finish[i] == 0 && need_leq_work != -1){
                 add_vectors(work, alloc[i], NRES);
                 finish[i] = 1;
             }
         }
-        printf("all compatible? = %d\n", all_compatible);
     }
-    
-    // free everything
-    free(finish);
-    finish = NULL;
-    free(work);
-    work = NULL;
 
-	return false;		// unsafe
+    // there's an execution order in which all threads
+    print_vector(finish, NPROC);
+	if (is_ones_vector(finish, NPROC)){
+        // free everything
+        free(finish);
+        finish = NULL;
+        free(work);
+        work = NULL;
+        return true; // safe
+    } else{
+        // free everything
+        free(finish);
+        finish = NULL;
+        free(work);
+        work = NULL;
+        return false; // unsafe
+    }
 }
 

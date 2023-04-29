@@ -89,10 +89,16 @@ int main(int argc, char *argv[])
   // TODO: Run banker's safety algorithm
   printf("NPROC: %d \t NRES: %d \n", NPROC, NRES);
   bool is_safe = isSafe(available,allocation,need,NPROC,NRES);
-  printf("[%d] <-- 0 unsafe, 1 safe\n", is_safe);
+  if(is_safe == 0){
+    printf("unsafe\n");
+  } else{
+    printf("safe\n");
+  }
+  // printf("[%d] <-- 0 unsafe, 1 safe\n", is_safe);
 
 
   // free everything -----------------------------------
+  fclose(file_stream);
   free(available);
   available = NULL;
   // free max

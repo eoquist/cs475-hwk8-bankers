@@ -90,15 +90,15 @@ int **subtract_matrices(int **m1, int **m2, int n, int m)
 }
 
 // Compare two vectors of length n
-// Returns -1 if v1 >= v2 element wise, false otherwise return index of greater elem
+// Returns -1 if v1 <= v2 element wise, false otherwise return index of greater elem
 int compare_vectors(int *v1, int *v2, int size)
 {
     for (int i = 0; i < size; i++)
     {
         if (v1[i] < v2[i])
         {
-            return i;
-        }
+            return i; // if any element in v1 is greater than the corresponding element in v2
+        } 
     }
     return -1;
 }
@@ -128,11 +128,18 @@ void print_matrix(int **matrix, int n, int m)
     }
 }
 
-// checks if a vector is all zeroes - used for finish vector in bankers algorithm
+// checks if a vector is either all zeros or ones - used for finish vector in bankers algorithm
 bool is_zero_vector(int *finish, int n){
     bool is_zero = true;
     for(int i = 0; i < n; i++){
         is_zero = is_zero && (finish[i] == 0);
     }
     return is_zero;
+}
+bool is_ones_vector(int *finish, int n){
+    bool is_one = true;
+    for(int i = 0; i < n; i++){
+        is_one = is_one && (finish[i] == 1);
+    }
+    return is_one;
 }

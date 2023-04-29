@@ -9,6 +9,7 @@ int *subtract_vectors(int *v1, int *v2, int size);
 int compare_vectors(int *v1, int *v2, int size);
 void print_vector(int *vector, int size);
 bool is_zero_vector(int *finish, int n);
+bool is_ones_vector(int *finish, int n);
 
 // Matrices must be the same size
 int **add_matrices(int **m1, int **m2, int n, int m);
