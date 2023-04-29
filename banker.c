@@ -54,16 +54,6 @@ bool isSafe(int *available, int **alloc, int **need, int NPROC, int NRES) {
         all_compatible = is_zero_vector(finish, NPROC);
         for(int i = 0; i < NPROC; i++){
             int need_leq_work = compare_vectors(work, need[i], NRES); 
-            // test print
-            // printf("need:\n");
-            // print_matrix(need, NPROC, NRES);
-            // printf("need[%d] <= work ??\n", i);
-            // printf("need: ");
-            // print_vector(need[i],NRES);
-            // printf("work: ");
-            // print_vector(work,NRES);
-            // printf("compare vec value: %d\n", need_leq_work);
-            
             if(finish[i] == 0 && need_leq_work != -1){
                 add_vectors(work, alloc[i], NRES);
                 finish[i] = 1;
@@ -90,3 +80,12 @@ bool isSafe(int *available, int **alloc, int **need, int NPROC, int NRES) {
     }
 }
 
+// test print
+// printf("need:\n");
+// print_matrix(need, NPROC, NRES);
+// printf("need[%d] <= work ??\n", i);
+// printf("need: ");
+// print_vector(need[i],NRES);
+// printf("work: ");
+// print_vector(work,NRES);
+// printf("compare vec value: %d\n", need_leq_work);
