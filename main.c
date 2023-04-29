@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
   int *available;   // available number of each resource
   int **max;        // max number of each resource for each process
   int **allocation; // currently allocated resources for each process
+  int **need; 
 
   // get file name
   char *file_name = argv[1];
@@ -40,13 +41,6 @@ int main(int argc, char *argv[])
   {
     fscanf(file_stream, "%d", &available[i]);
   }
-
-
-  // need matrix ??? !!!
-  //====================
-  //====================
-  //====================
-  //====================
 
 
   // allocate and get max resource matrix
@@ -71,14 +65,24 @@ int main(int argc, char *argv[])
     }
   }
 
+  // need matrix 
+  need = (int **)malloc(NPROC * sizeof(int *));
+  need = subtract_matrices(max,allocation,NPROC,NRES);
+  //====================
+  //====================
+  //====================
+  //====================
+
   // print everything
-  // printf("resources: %d\n", NRES);
-  // printf("processes: %d\n\navailable:\n", NPROC);
+  printf("resources: %d\n", NRES);
+  printf("processes: %d\n\navailable:\n", NPROC);
   print_vector(available, NRES);
-  // printf("\nmax:\n");
-  // print_matrix(max, NPROC, NRES);
-  // printf("\nalloc:\n");
-  // print_matrix(allocation, NPROC, NRES);
+  printf("\nmax:\n");
+  print_matrix(max, NPROC, NRES);
+  printf("\nalloc:\n");
+  print_matrix(allocation, NPROC, NRES);
+  printf("\nneed:\n");
+  print_matrix(need, NPROC, NRES);
 
   // run sanity check
   if (!sanity_check(NRES, NPROC, available, max, allocation))
@@ -90,6 +94,31 @@ int main(int argc, char *argv[])
   // MAX VS NEED
   bool is_safe = isSafe(available,allocation,max,NRES,NPROC);
   printf("[%d] <-- 0 unsafe, 1 safe\n", is_safe);
+
+
+  free(available);
+  available = NULL;
+  // free max
+  for (int i = 0; i < NPROC; i++){
+    free(max[i]);
+    max[i] = NULL;
+  }
+  free(max);
+  max = NULL;
+  // free allocation
+  for (int i = 0; i < NPROC; i++){
+    free(allocation[i]);
+    allocation[i] = NULL;
+  }
+  free(allocation);
+  allocation = NULL;
+  // free need
+  for (int i = 0; i < NPROC; i++){
+    free(need[i]);
+    need[i] = NULL;
+  }
+  free(need);
+  need = NULL;
 
   return 0;
 }

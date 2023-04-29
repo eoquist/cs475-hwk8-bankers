@@ -71,14 +71,9 @@ bool sanity_check(int NRES, int NPROC, int *available, int **max, int **allocati
 // return permutations from another function
 
 bool isSafe(int *available, int **alloc, int **need, int NRES, int NPROC) {
-    /**
-     * What is going on with David's pseudocode ????
-    */
-
     // work[NRES] = available.clone();
     int *work_available = malloc(NRES * sizeof(int)); // printf("available vector size: %d\n", size);
-    for (int i = 0; i < NRES; i++)
-    {
+    for (int i = 0; i < NRES; i++){
         work_available[i] = available[i];
     }
     
@@ -105,6 +100,10 @@ bool isSafe(int *available, int **alloc, int **need, int NRES, int NPROC) {
     // ^^^^^^^ tf does this mean
 	// if (finish == [1, 1, ..., 1])
 	// 	return true	// safe!
+    free(finish);
+    finish = NULL;
+    free(work_available);
+    work_available = NULL;
 	return false;		// unsafe
 }
 
