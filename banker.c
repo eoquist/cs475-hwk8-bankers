@@ -37,6 +37,11 @@ bool sanity_check(int NRES, int NPROC, int *available, int **max, int **allocati
     return true;
 }
 
+//bool works(permutation, int *available, int **alloc, int **need, int NPROC, int NRES){
+//return if this permutation works
+
+//}
+
 
 // return permutations from another function ???
 
@@ -51,33 +56,30 @@ bool isSafe(int *available, int **alloc, int **need, int NPROC, int NRES) {
     }
 
     bool all_compatible = true;
-    char safe_status[6] = "SAFE:\t";
+    // char safe_status[6] = "SAFE:\t";
     while (all_compatible) {
         all_compatible = is_zero_vector(finish, NPROC);
         for(int i = 0; i < NPROC; i++){
             int need_leq_work = compare_vectors(work, need[i], NRES); 
             if(finish[i] == 0 && need_leq_work != -1){
-                // Print formats
-                int size = snprintf(NULL, 0, "T%d\t", i); 
-                char* safe_thread_str = malloc(size + 1); // allocate memory for the character array
-                sprintf(safe_thread_str, "T%d\t", i); // format the string and save it to the character array
-                strcat(safe_status,safe_thread_str);
-                free(safe_thread_str);
-                safe_thread_str = NULL;
+            // Print formats
+            // char safe_thread_str[10] = ""; // initialize to empty string
+            // sprintf(safe_thread_str, "T%d\t", i); // format the string and save it to the character array
+            // strcat(safe_status, safe_thread_str);
 
-                strcat(safe_status, safe_thread_str);
                 add_vectors(work, alloc[i], NRES);
                 finish[i] = 1;
             }
         }
     }
+    
 
     // there's an execution order in which all threads
     // ???
     print_vector(finish, NPROC);
 
 	if (is_ones_vector(finish, NPROC)){
-        printf("%s", safe_status);
+        // printf("%s", safe_status);
         // free everything
         free(finish);
         finish = NULL;

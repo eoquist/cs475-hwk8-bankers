@@ -98,7 +98,6 @@ int main(int argc, char *argv[])
 
 
   // free everything -----------------------------------
-  fclose(file_stream);
   free(available);
   available = NULL;
   // free max
@@ -122,6 +121,6 @@ int main(int argc, char *argv[])
   }
   free(need);
   need = NULL;
-
+  fclose(file_stream);
   return 0;
 }
