@@ -37,62 +37,29 @@ bool sanity_check(int NRES, int NPROC, int *available, int **max, int **allocati
     return true;
 }
 
-//bool works(permutation, int *available, int **alloc, int **need, int NPROC, int NRES){
-//return if this permutation works
 
-//}
-
-
-// return permutations from another function ???
-
-bool isSafe(int *available, int **alloc, int **need, int NPROC, int NRES) {
-    int *work = malloc(NRES * sizeof(int));
-    for (int i = 0; i < NRES; i++){
-        work[i] = available[i];
+bool check_is_safe(int *work, int *finish, int **alloc, int **need, char *ouput_str, int NPROC, int NRES) {
+    if (is_ones_vector(finish, NPROC)){
+        printf("%s", ouput_str);
+        return true;
     }
-    int *finish = malloc(NPROC * sizeof(int));
-    for (int i = 0; i < NPROC; i++) {
-        finish[i] = 0;
-    }
-
-    bool all_compatible = true;
-    // char safe_status[6] = "SAFE:\t";
-    while (all_compatible) {
-        all_compatible = is_zero_vector(finish, NPROC);
+    else{
+        bool return_bool = true;
         for(int i = 0; i < NPROC; i++){
             int need_leq_work = compare_vectors(work, need[i], NRES); 
             if(finish[i] == 0 && need_leq_work != -1){
-            // Print formats
-            // char safe_thread_str[10] = ""; // initialize to empty string
-            // sprintf(safe_thread_str, "T%d\t", i); // format the string and save it to the character array
-            // strcat(safe_status, safe_thread_str);
-
-                add_vectors(work, alloc[i], NRES);
+                // Print formats
+                char safe_thread_str[10] = ""; // initialize to empty string
+                sprintf(safe_thread_str, "T%d\t", i); // format the string and save it to the character array
+                strcat(ouput_str, safe_thread_str);
+                work = add_vectors(work, alloc[i], NRES);
                 finish[i] = 1;
+                return_bool = return_bool && check_is_safe(work, finish, alloc, need, ouput_str, NPROC, NRES);
+                // finish[i] = 0;
+                
             }
         }
-    }
-    
-
-    // there's an execution order in which all threads
-    // ???
-    print_vector(finish, NPROC);
-
-	if (is_ones_vector(finish, NPROC)){
-        // printf("%s", safe_status);
-        // free everything
-        free(finish);
-        finish = NULL;
-        free(work);
-        work = NULL;
-        return true; // safe
-    } else{
-        // free everything
-        free(finish);
-        finish = NULL;
-        free(work);
-        work = NULL;
-        return false; // unsafe
+        return return_bool;
     }
 }
 

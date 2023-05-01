@@ -41,8 +41,6 @@ int main(int argc, char *argv[])
   {
     fscanf(file_stream, "%d", &available[i]);
   }
-
-
   // allocate and get max resource matrix
   max = (int **)malloc(NPROC * sizeof(int *));
   for (int i = 0; i < NPROC; i++)
@@ -53,7 +51,6 @@ int main(int argc, char *argv[])
       fscanf(file_stream, "%d", &max[i][j]);
     }
   }
-
   // allocate and get allocation matrix
   allocation = (int **)malloc(NPROC * sizeof(int *));
   for (int i = 0; i < NPROC; i++)
@@ -64,9 +61,8 @@ int main(int argc, char *argv[])
       fscanf(file_stream, "%d", &allocation[i][j]);
     }
   }
-
   // need matrix 
-  need = (int **)malloc(NPROC * sizeof(int *));
+  // need = (int **)malloc(NPROC * sizeof(int *)); // turns out this was causing leaks -- makes sense
   need = subtract_matrices(max,allocation,NPROC,NRES);
 
   // print everything
@@ -88,39 +84,59 @@ int main(int argc, char *argv[])
 
   // TODO: Run banker's safety algorithm
   printf("NPROC: %d \t NRES: %d \n", NPROC, NRES);
-  bool is_safe = isSafe(available,allocation,need,NPROC,NRES);
+  int *work = malloc(NRES * sizeof(int));
+  for (int i = 0; i < NRES; i++){
+    work[i] = available[i];
+  }
+  int *finish = malloc(NPROC * sizeof(int));
+  for (int i = 0; i < NPROC; i++){
+    finish[i] = 0;
+  }
+  // ----------------------------------------------------
+  char * output_str = "SAFE: ";
+  bool is_safe = check_is_safe(work,finish,allocation,need,output_str,NPROC,NRES);
   if(is_safe == 0){
     printf("unsafe\n");
   } else{
     printf("safe\n");
   }
-  // printf("[%d] <-- 0 unsafe, 1 safe\n", is_safe);
-
+  
+  // ----------------------------------------------------
 
   // free everything -----------------------------------
   free(available);
   available = NULL;
   // free max
-  for (int i = 0; i < NPROC; i++){
+  for (int i = 0; i < NPROC; i++)
+  {
     free(max[i]);
     max[i] = NULL;
   }
   free(max);
   max = NULL;
   // free allocation
-  for (int i = 0; i < NPROC; i++){
+  for (int i = 0; i < NPROC; i++)
+  {
     free(allocation[i]);
     allocation[i] = NULL;
   }
   free(allocation);
   allocation = NULL;
   // free need
-  for (int i = 0; i < NPROC; i++){
+  for (int i = 0; i < NPROC; i++)
+  {
     free(need[i]);
     need[i] = NULL;
   }
   free(need);
   need = NULL;
+  // free finish and work
+  free(finish);
+  finish = NULL;
+  free(work);
+  work = NULL;
+
+  // close the file stream
   fclose(file_stream);
   return 0;
 }
