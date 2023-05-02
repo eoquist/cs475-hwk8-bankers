@@ -52,6 +52,14 @@ bool check_is_safe(int *work, int *finish, int **alloc, int **need, int *safe_pe
         for(int i = 0; i < NPROC; i++){
             int need_leq_work = compare_vectors(work, need[i], NRES); // -1 means more available than need
             if(need_leq_work != -1){
+                // continue;
+                printf("UNSAFE:\t");
+                for(int i = 0; i < NPROC; i++){
+                if(unsafe_proc[i] == 0){
+                    printf("T%u ",unsafe_proc[i]);
+                }
+                }
+                printf("can't finish:\n");
                 break;
             }
             if(finish[i] == 1){
@@ -59,14 +67,13 @@ bool check_is_safe(int *work, int *finish, int **alloc, int **need, int *safe_pe
             }
             int *safe_permutations_copy = deep_copy_vector(safe_permutations,NPROC); 
             int *finish_copy = deep_copy_vector(finish,NPROC); 
-
             int *work_copy = add_vectors(work, alloc[i], NRES);
            
             finish_copy[i] = 1;
             // need a way to track what sequence we're on -- aka depth
             safe_permutations_copy[seq_idx] = i;
             unsafe_proc[i] = 1;
-            printf("unsafe thread: T%u\n", unsafe_proc[i]);
+            // printf("unsafe thread: T%u\n", unsafe_proc[i]);
             if(check_is_safe(work_copy, finish_copy, alloc, need, safe_permutations_copy, unsafe_proc, NPROC, NRES, seq_idx+1)){
                 safe = true;
             }

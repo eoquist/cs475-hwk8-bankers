@@ -103,15 +103,15 @@ int main(int argc, char *argv[])
 
   bool is_safe = check_is_safe(work,finish,allocation,need,safe_permutations,unsafe_proc,NPROC,NRES,0);
 
-  if(is_safe == 0){
-    printf("UNSAFE:\t");
-    for(int i = 0; i < NPROC; i++){
-      if(unsafe_proc[i] == 0){
-        printf("T%u ",unsafe_proc[i]);
-      }
-    }
-    printf("can't finish:\n");
-  }
+  // if(is_safe == 0){
+    // printf("UNSAFE:\t");
+    // for(int i = 0; i < NPROC; i++){
+    //   if(unsafe_proc[i] == 0){
+    //     printf("T%u ",unsafe_proc[i]);
+    //   }
+    // }
+    // printf("can't finish:\n");
+  // }
   
   
   // ----------------------------------------------------
