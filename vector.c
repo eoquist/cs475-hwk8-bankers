@@ -23,6 +23,19 @@ int **deep_copy_matrix(int **matrix, int n, int m)
     return new_matrix;
 }
 
+// Creates and returns a new copy of the input vector
+int *deep_copy_vector(int *vec, int size)
+{
+    // Allocate memory for new vector
+    int *new_vector = malloc(size * sizeof(int));
+    // Copy contents
+    for (int i = 0; i < size; i++)
+    {
+        new_vector[i] = vec[i];
+    }
+    return new_vector;
+}
+
 // Adds two vectors of the same size
 int *add_vectors(int *v1, int *v2, int size)
 {
@@ -90,7 +103,7 @@ int **subtract_matrices(int **m1, int **m2, int n, int m)
 }
 
 // Compare two vectors of length n
-// Returns -1 if v1 <= v2 element wise, false otherwise return index of greater elem
+// Returns -1 if v1 >= v2 element wise, false otherwise return index of greater elem
 int compare_vectors(int *v1, int *v2, int size)
 {
     for (int i = 0; i < size; i++)

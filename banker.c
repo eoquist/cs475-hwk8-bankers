@@ -38,29 +38,49 @@ bool sanity_check(int NRES, int NPROC, int *available, int **max, int **allocati
 }
 
 
-bool check_is_safe(int *work, int *finish, int **alloc, int **need, char *ouput_str, int NPROC, int NRES) {
+bool check_is_safe(int *work, int *finish, int **alloc, int **need, int *safe_permutations, int *unsafe_proc, int NPROC, int NRES, int seq_idx){
+    bool safe = false;
     if (is_ones_vector(finish, NPROC)){
-        printf("%s", ouput_str);
+        printf("SAFE:\t");
+        for(int i = 0; i < NPROC; i++){
+            printf("T%u ",safe_permutations[i]);
+        }
+        printf("\n");
         return true;
     }
     else{
-        bool return_bool = true;
         for(int i = 0; i < NPROC; i++){
-            int need_leq_work = compare_vectors(work, need[i], NRES); 
-            if(finish[i] == 0 && need_leq_work != -1){
-                // Print formats
-                char safe_thread_str[10] = ""; // initialize to empty string
-                sprintf(safe_thread_str, "T%d\t", i); // format the string and save it to the character array
-                strcat(ouput_str, safe_thread_str);
-                work = add_vectors(work, alloc[i], NRES);
-                finish[i] = 1;
-                return_bool = return_bool && check_is_safe(work, finish, alloc, need, ouput_str, NPROC, NRES);
-                // finish[i] = 0;
-                
+            int need_leq_work = compare_vectors(work, need[i], NRES); // -1 means more available than need
+            if(need_leq_work != -1){
+                break;
             }
+            if(finish[i] == 1){
+                continue;
+            }
+            int *safe_permutations_copy = deep_copy_vector(safe_permutations,NPROC); 
+            int *finish_copy = deep_copy_vector(finish,NPROC); 
+
+            int *work_copy = add_vectors(work, alloc[i], NRES);
+           
+            finish_copy[i] = 1;
+            // need a way to track what sequence we're on -- aka depth
+            safe_permutations_copy[seq_idx] = i;
+            unsafe_proc[i] = 1;
+            printf("unsafe thread: T%u\n", unsafe_proc[i]);
+            if(check_is_safe(work_copy, finish_copy, alloc, need, safe_permutations_copy, unsafe_proc, NPROC, NRES, seq_idx+1)){
+                safe = true;
+            }
+
+            // free
+            free(work_copy);
+            work_copy = NULL;
+            free(finish_copy);
+            finish_copy = NULL;
+            free(safe_permutations_copy);
+            safe_permutations_copy = NULL;
         }
-        return return_bool;
     }
+    return safe;
 }
 
 // test print
@@ -72,3 +92,6 @@ bool check_is_safe(int *work, int *finish, int **alloc, int **need, char *ouput_
 // printf("work: ");
 // print_vector(work,NRES);
 // printf("compare vec value: %d\n", need_leq_work);
+
+// valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --show-reachable=yes ./bankers safe.txt 
+// valgrind --leak-check=full ./bankers safe.txt 

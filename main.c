@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
 #include "vector.h"
 #include "banker.h"
 
@@ -77,33 +78,49 @@ int main(int argc, char *argv[])
   // print_matrix(need, NPROC, NRES);
 
   // run sanity check
-  if (!sanity_check(NRES, NPROC, available, max, allocation))
-  {
+  if (!sanity_check(NRES, NPROC, available, max, allocation)){
     return -1;
   }
 
-  // TODO: Run banker's safety algorithm
-  printf("NPROC: %d \t NRES: %d \n", NPROC, NRES);
-  int *work = malloc(NRES * sizeof(int));
-  for (int i = 0; i < NRES; i++){
-    work[i] = available[i];
+
+  // ----------------------------------------------------
+  // Run banker's safety algorithm
+
+  int *work = deep_copy_vector(available,NRES);
+  for(int i = 0; i < NPROC; i++){
+    subtract_vectors(work, allocation[i],NRES);
   }
   int *finish = malloc(NPROC * sizeof(int));
   for (int i = 0; i < NPROC; i++){
     finish[i] = 0;
   }
-  // ----------------------------------------------------
-  char * output_str = "SAFE: ";
-  bool is_safe = check_is_safe(work,finish,allocation,need,output_str,NPROC,NRES);
+
+  // creating a proper buffer size for output_str
+  int buffer_size = ((1 + 3 + 1 )*NPROC) + 1;
+  char* output_str = (char*) malloc(buffer_size * sizeof(char));
+  int* safe_permutations = malloc(NPROC * sizeof(int));
+  int* unsafe_proc = deep_copy_vector(finish,NPROC);
+
+  bool is_safe = check_is_safe(work,finish,allocation,need,safe_permutations,unsafe_proc,NPROC,NRES,0);
+
   if(is_safe == 0){
-    printf("unsafe\n");
-  } else{
-    printf("safe\n");
+    printf("UNSAFE:\t");
+    for(int i = 0; i < NPROC; i++){
+      if(unsafe_proc[i] == 0){
+        printf("T%u ",unsafe_proc[i]);
+      }
+    }
+    printf("can't finish:\n");
   }
+  
   
   // ----------------------------------------------------
 
-  // free everything -----------------------------------
+  // free everything 
+  free(output_str);
+  output_str = NULL;
+  free(safe_permutations);
+  safe_permutations = NULL;
   free(available);
   available = NULL;
   // free max
